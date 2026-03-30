@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neo4j Airline Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <div class="background-scene">
+    <div class="globe-wrap">
+      <div class="globe">
+        <div class="globe-lat lat-1"></div>
+        <div class="globe-lat lat-2"></div>
+        <div class="globe-lat lat-3"></div>
+
+        <div class="globe-long long-1"></div>
+        <div class="globe-long long-2"></div>
+        <div class="globe-long long-3"></div>
+
+        <div class="orbital orbital-1">
+          <span class="plane">✈</span>
+        </div>
+        <div class="orbital orbital-2">
+          <span class="plane">✈</span>
+        </div>
+        <div class="orbital orbital-3">
+          <span class="plane">✈</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <div class="brand-mark">◎</div>
+          <div>
+            <h1>SkyGraph</h1>
+            <p>Neo4j Native Air Route Explorer</p>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button type="button" class="nav-btn active" data-view="overview">Overview</button>
+          <button type="button" class="nav-btn" data-view="explorer">Airport Explorer</button>
+          <button type="button" class="nav-btn" data-view="pathfinder">Path Finder</button>
+          <button type="button" class="nav-btn" data-view="multihop">Multi-Hop</button>
+          <button type="button" class="nav-btn" data-view="hubs">Hub Network</button>
+        </nav>
+      </div>
+
+      <div class="sidebar-foot">
+        <div class="legend">
+          <span class="dot dot-a"></span> Airports
+        </div>
+        <div class="legend">
+          <span class="line"></span> Routes
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-text">
+          <h2 id="viewTitle">Overview</h2>
+          <p id="viewSubtitle">Graph-first airline intelligence powered by Neo4j</p>
+        </div>
+
+        <div class="stats-inline">
+          <div class="metric">
+            <span class="metric-label">Airports</span>
+            <span class="metric-value" id="airportCount">--</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Routes</span>
+            <span class="metric-value" id="routeCount">--</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="graph-stage">
+          <div id="graph"></div>
+          <div class="graph-overlay">
+            <div class="overlay-chip">Neo4j Graph View</div>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <section class="panel-view active" id="overview">
+            <div class="panel-block">
+              <h3>Welcome</h3>
+              <p>
+                This dashboard is designed as a graph workspace, not a normal webpage.
+                The center stays dedicated to relationships, connectivity, traversal, and path exploration.
+              </p>
+            </div>
+
+            <div class="panel-block">
+              <h3>Top Hubs</h3>
+              <div id="topHubsList" class="list-block">Loading top hubs...</div>
+            </div>
+          </section>
+
+          <section class="panel-view" id="explorer">
+            <div class="panel-block">
+              <h3>Airport Explorer</h3>
+              <label for="explorerIata">IATA Code</label>
+              <div class="input-row">
+                <input id="explorerIata" type="text" placeholder="DEL">
+                <button type="button" id="explorerBtn">Explore</button>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <h3>Airport Details</h3>
+              <div id="airportDetails" class="info-box">Search an airport to view details.</div>
+            </div>
+          </section>
+
+          <section class="panel-view" id="pathfinder">
+            <div class="panel-block">
+              <h3>Shortest Path</h3>
+
+              <label for="pathSrc">Source</label>
+              <input id="pathSrc" type="text" placeholder="DEL">
+
+              <label for="pathDst">Destination</label>
+              <input id="pathDst" type="text" placeholder="JFK">
+
+              <button type="button" id="pathBtn">Find Path</button>
+            </div>
+
+            <div class="panel-block">
+              <h3>Route Result</h3>
+              <div id="pathInfo" class="info-box">Run a path query to visualize the route chain.</div>
+            </div>
+          </section>
+
+          <section class="panel-view" id="multihop">
+            <div class="panel-block">
+              <h3>Multi-Hop Expansion</h3>
+              <label for="multiIata">Starting IATA</label>
+              <div class="input-row">
+                <input id="multiIata" type="text" placeholder="SIN">
+                <button type="button" id="multiBtn">Expand</button>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <h3>How it works</h3>
+              <div class="info-box">
+                Visualizes first-hop and second-hop route expansion from the selected airport.
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-view" id="hubs">
+            <div class="panel-block">
+              <h3>Hub Network</h3>
+              <button type="button" id="hubBtn">Load Top Hub Graph</button>
+            </div>
+
+            <div class="panel-block">
+              <h3>Hub Notes</h3>
+              <div class="info-box">
+                Shows dense route structures for the strongest airport hubs in the dataset.
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
